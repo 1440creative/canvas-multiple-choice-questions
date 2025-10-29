@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+		/>
+
+		<link rel="stylesheet" href="style.css" />
+
+		<title>Multiple Choice Quiz Example</title>
+	</head>
+	<body>
+		<div class="color-theme-background">
+			<div class="knowledge-check">
+				<div class="knowledge-check-container">
+					<div class="quiz-card">
+						<div class="quiz-card-container">
+							<div class="quiz-card-main">
+								<div class="quiz-card-title"><p>MCQ Title</p></div>
+								<div class="quiz-card-interactive">
+									<div
+										id="mcq-container"
+										class="quiz-container quiz-mcq"
+										data-questions-url="data/example-questions.json"
+									></div>
+								</div>
+								<div class="quiz-card-actions">
+									<div class="quiz-card-submit">
+										<button
+											id="quiz-mcq-submit"
+											class="quiz-card-button quiz-card-button--disabled"
+											type="button"
+										>
+											Check
+										</button>
+									</div>
+								</div>
+								<div class="quiz-card-feedback">
+									<div class="quiz-card-feedback-wrap">
+										<div class="quiz-card-feedback-icon">
+											<i class="fa-solid fa-xmark"></i>
+										</div>
+										<div class="quiz-card-feedback-label">
+											Incorrect
+										</div>
+									</div>
+								</div>
+								<div class="knowledge-check-retake-container">
+									<button
+										class="knowledge-check-retake"
+										type="button"
+									>
+										<div class="knowledge-check-retake-content">
+											<div class="knowledge-check-retake-text">
+												Take Again
+											</div>
+											<i
+												class="knowledge-check-retake-icon fa-solid fa-repeat"
+											></i>
+										</div>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="quiz-controls">
+						<button
+							class="quiz-controls-button"
+							type="button"
+							data-direction="prev"
+							aria-label="Previous question"
+						>
+							<i class="fa-solid fa-arrow-left"></i>
+						</button>
+						<button
+							class="quiz-controls-button"
+							type="button"
+							data-direction="next"
+							aria-label="Next question"
+						>
+							<i class="fa-solid fa-arrow-right"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
