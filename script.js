@@ -43,9 +43,7 @@ const submit = document.getElementById('quiz-mcq-submit');
 const retakeContainer = document.querySelector(
 	'.knowledge-check-retake-container'
 );
-const retakeBtn = retakeContainer
-	? retakeContainer.querySelector('.knowledge-check-retake')
-	: null;
+let retakeControl = null;
 const prevButton = document.querySelector(
 	'.quiz-controls-button[data-direction="prev"]'
 );
@@ -57,16 +55,12 @@ let questionSet = [];
 let currentQuestionIndex = 0;
 let mcq = null;
 
+ensureRetakeControl();
 initializeQuiz();
 
 //submit listener
 if (submit) {
 	submit.addEventListener('click', handleSubmit);
-}
-
-//retake listener
-if (retakeBtn) {
-	retakeBtn.addEventListener('click', handleRetake);
 }
 
 if (prevButton) {
@@ -75,6 +69,11 @@ if (prevButton) {
 
 if (nextButton) {
 	nextButton.addEventListener('click', () => navigateQuestion(1));
+}
+
+if (retakeControl) {
+	retakeControl.addEventListener('click', handleRetake);
+	retakeControl.addEventListener('keydown', handleRetakeKeydown);
 }
 
 //functions
@@ -253,7 +252,7 @@ function handleSubmit(e) {
 	giveFeedback(answerIsCorrect);
 
 	//give option to retake
-	activateEl(retakeContainer, retakeBtn);
+	setRetakeVisibility(true);
 }
 
 //feedback
@@ -283,7 +282,8 @@ function handleRetake() {
 	}
 
 	//hide retake option + feedback + show submit
-	deactivateEl(retakeContainer, retakeBtn, feedbackEl, actionsEl);
+	deactivateEl(retakeContainer, retakeControl, feedbackEl, actionsEl);
+	setRetakeVisibility(false);
 	giveFeedback(false);
 	if (submit) {
 		submit.classList.add('quiz-card-button--disabled');
@@ -304,7 +304,8 @@ function loadMCQ(mcq) {
 		return false;
 	}
 
-	deactivateEl(retakeContainer, retakeBtn, feedbackEl, actionsEl);
+	deactivateEl(retakeContainer, retakeControl, feedbackEl, actionsEl);
+	setRetakeVisibility(false);
 	container.innerHTML = '';
 
 	if (submit) {
@@ -384,6 +385,59 @@ function deactivateEl(...els) {
 			const className = el.classList[0]; //get first in list
 			el.classList.remove(`${className}--active`);
 		}
+	}
+}
+
+function ensureRetakeControl() {
+	if (!retakeContainer) {
+		return;
+	}
+
+	if (retakeControl && retakeControl.parentElement === retakeContainer) {
+		return;
+	}
+
+	retakeContainer.innerHTML = '';
+
+	retakeControl = document.createElement('div');
+	retakeControl.className = 'knowledge-check-retake';
+	retakeControl.setAttribute('role', 'button');
+	retakeControl.setAttribute('tabindex', '-1');
+	retakeControl.setAttribute('aria-hidden', 'true');
+	retakeControl.hidden = true;
+	retakeControl.textContent = 'Take Again';
+
+	retakeContainer.appendChild(retakeControl);
+}
+
+function setRetakeVisibility(isVisible) {
+	if (!retakeContainer || !retakeControl) {
+		return;
+	}
+
+	if (isVisible) {
+		retakeContainer.classList.add(
+			'knowledge-check-retake-container--active'
+		);
+		retakeControl.classList.add('knowledge-check-retake--active');
+		retakeControl.hidden = false;
+		retakeControl.removeAttribute('aria-hidden');
+		retakeControl.tabIndex = 0;
+	} else {
+		retakeContainer.classList.remove(
+			'knowledge-check-retake-container--active'
+		);
+		retakeControl.classList.remove('knowledge-check-retake--active');
+		retakeControl.hidden = true;
+		retakeControl.setAttribute('aria-hidden', 'true');
+		retakeControl.tabIndex = -1;
+	}
+}
+
+function handleRetakeKeydown(event) {
+	if (event.key === 'Enter' || event.key === ' ') {
+		event.preventDefault();
+		handleRetake();
 	}
 }
 

@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-body {
+#lll-widget-wrapper {
   font-family: 'Source Sans 3', sans-serif;
   display: flex;
   align-items: center;
@@ -65,13 +65,14 @@ body {
   padding: .65rem 1.8rem;
   pointer-events: none;
   text-transform: uppercase;
-  transition: border-color .2s, color .2s, opacity .6s .9s, transform .2s;
+  transition: border-color .2s, color .2s, opacity .6s .9s;
 }
 
 .knowledge-check-retake::after {
   content: '↻';
   font-size: 1.1rem;
   line-height: 1;
+  margin-left: .65rem;
 }
 
 .knowledge-check-retake.knowledge-check-retake--active {
@@ -200,18 +201,24 @@ button.quiz-card-button--disabled {
   border: .2rem solid black;
   border-radius: 50%;
   color: var(--color-theme);
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 4rem;
-  line-height: 5rem;
   margin: 0 auto;
-  text-align: center;
   transform: scale(1.2);
   transition: opacity .6s .9s, transform .6s .9s;
   width: 4rem;
 }
 
 .quiz-card-feedback-icon i {
-  font-size: 2.5rem;
+  font-size: 2.4rem;
+}
+
+.quiz-card-feedback-icon svg {
+  display: block;
+  height: 2.6rem;
+  width: 2.6rem;
 }
 
 .quiz-card-feedback--active .quiz-card-feedback-icon {
@@ -253,8 +260,11 @@ button.quiz-card-button--disabled {
 .quiz-controls {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1.5rem;
   padding-top: 1.5rem;
+  width: 100%;
+  margin-left: -1.75rem;
 }
 
 .quiz-controls-button {
@@ -267,6 +277,7 @@ button.quiz-card-button--disabled {
   display: inline-flex;
   height: 2.75rem;
   justify-content: center;
+  line-height: 1;
   transition: border-color .2s, color .2s, background-color .2s;
   width: 2.75rem;
 }
@@ -278,8 +289,14 @@ button.quiz-card-button--disabled {
   outline: none;
 }
 
-.quiz-controls-button i {
-  font-size: 1.1rem;
+.quiz-controls-icon {
+  align-items: center;
+  display: inline-flex;
+  font-size: 1.2rem;
+  justify-content: center;
+  line-height: 1;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .quiz-controls-button:disabled {
@@ -333,6 +350,12 @@ button.quiz-card-button--disabled {
   top: 50%;
   transform: translateY(-50%);
   width: 2rem;
+}
+
+
+.quiz-mcq-option__indicator svg {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 
