@@ -1,0 +1,26 @@
+[
+  {
+    "question": "What is the capital of France?",
+    "answers": ["Paris", "Zurich", "London", "Los Angeles"],
+    "answer": 0
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "answers": ["Earth", "Jupiter", "Venus", "Mars"],
+    "answer": 3
+  },
+  {
+    "question": "Who wrote \"Hamlet\"?",
+    "answers": ["Dickens", "Hemingway", "Shakespeare", "Tolstoy"],
+    "answer": 2
+  },
+  {
+    "question": "The term <em>equality</em> could best be described as:",
+    "answers": [
+      "Tools that identify and address inequality",
+      "Dividing resources equally without factoring differences in need and ability",
+      "Fixing the system to offer equal access to both tools and opportunities"
+    ],
+    "answer": 1
+  }
+]

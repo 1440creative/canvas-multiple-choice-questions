@@ -1,3 +1,5 @@
+const questionsCache = new Map();
+
 //html for option-wrapper
 const optionHTML = `
 <div class="quiz-mcq-option">
@@ -32,34 +34,6 @@ const optionHTML = `
 							<div class="quiz-mcq-option__border"></div>
 						</div>
 `;
-
-const defaultQuestions = [
-	{
-		question: 'What is the capital of France?',
-		answers: ['Paris', 'Zurich', 'London', 'Los Angeles'],
-		answer: 0,
-	},
-	{
-		question: 'Which planet is known as the Red Planet?',
-		answers: ['Earth', 'Jupiter', 'Venus', 'Mars'],
-		answer: 3,
-	},
-	{
-		question: 'Who wrote "Hamlet"?',
-		answers: ['Dickens', 'Hemingway', 'Shakespeare', 'Tolstoy'],
-		answer: 2,
-	},
-	{
-		question:
-			'The term <em>equality</em> could best be described as:',
-		answers: [
-			'Tools that identify and address inequality',
-			'Dividing resources equally without factoring differences in need and ability',
-			'Fixing the system to offer equal access to both tools and opportunities',
-		],
-		answer: 1,
-	},
-];
 
 const correctFeedbackIcon = `
 <svg
@@ -349,6 +323,43 @@ function handleRetakeKeydown(event) {
 	}
 }
 
+async function fetchQuestions(url) {
+	if (!url) {
+		throw new Error('No questions URL provided.');
+	}
+
+	if (questionsCache.has(url)) {
+		return questionsCache.get(url);
+	}
+
+	const request = window
+		.fetch(url, { credentials: 'same-origin' })
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(
+					`Failed to load questions (status ${response.status})`
+				);
+			}
+			return response.json();
+		})
+		.then((data) => {
+			if (!Array.isArray(data)) {
+				throw new Error('Quiz data must be an array of questions.');
+			}
+			return data;
+		});
+
+	questionsCache.set(url, request);
+
+	try {
+		const data = await request;
+		return data;
+	} catch (error) {
+		questionsCache.delete(url);
+		throw error;
+	}
+}
+
 function handlePrevNavigation() {
 	navigateQuestion(-1);
 }
@@ -358,7 +369,7 @@ function handleNextNavigation() {
 }
 
 //functions
-function initializeQuiz() {
+async function initializeQuiz() {
 	if (!container) {
 		console.error('MCQ container element not found.');
 		return;
@@ -376,24 +387,46 @@ function initializeQuiz() {
 	}
 	updateNavigation();
 
-	const questions = defaultQuestions.map((question) => ({
-		...question,
-		answers: [...question.answers],
-	}));
+	const questionsUrl = container.dataset.questionsUrl;
 
-	if (!questions.length) {
-		renderMessage('No quiz questions available.');
-		questionSet = [];
+	if (!questionsUrl) {
+		renderMessage('Quiz data is unavailable.');
+		console.error(
+			'MCQ data URL missing. Add a data-questions-url attribute to the container.'
+		);
 		updateNavigation();
 		return;
 	}
 
-	questionSet = questions;
-	const questionIndex = resolveQuestionIndex(
-		container.dataset.questionIndex,
-		questionSet.length
-	);
-	showQuestion(questionIndex);
+	renderMessage('Loading question...');
+
+	try {
+		const questions = await fetchQuestions(questionsUrl);
+
+		if (!Array.isArray(questions) || !questions.length) {
+			renderMessage('No quiz questions available.');
+			questionSet = [];
+			updateNavigation();
+			return;
+		}
+
+		questionSet = questions.map((question) => ({
+			...question,
+			answers: Array.isArray(question.answers)
+				? [...question.answers]
+				: [],
+		}));
+
+		const questionIndex = resolveQuestionIndex(
+			container.dataset.questionIndex,
+			questionSet.length
+		);
+		showQuestion(questionIndex);
+	} catch (error) {
+		console.error('Failed to load quiz data:', error);
+		renderMessage('Unable to load this quiz right now.');
+		updateNavigation();
+	}
 }
 
 function showQuestion(targetIndex) {
